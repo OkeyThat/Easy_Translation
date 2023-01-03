@@ -6,3 +6,9 @@ Create programs that can be easily translated.
 3. Translate and display in the text area when there is no input for more than 5 seconds after input is started
 4. Basically, translate Korean into English
 5. Create a window with Python
+
+
+#개발환경 세팅
+1. python3 버전으로 세팅
+2. 터미널에서 pip3 install PyQt5 명령어 실행
+3. 권한 에러 일 경우 sudo pip3 install PyQt5 권한 추가
