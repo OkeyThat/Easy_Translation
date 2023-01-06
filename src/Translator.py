@@ -1,4 +1,17 @@
 import sys
+import subprocess
+
+try:
+    # 없는 모듈 import시 에러 발생
+    import clipboard
+except:
+    # pip 모듈 업그레이드
+    subprocess.check_call([sys.executable,'-m', 'pip', 'install', '--upgrade', 'pip'])
+    # 에러 발생한 모듈 설치
+    subprocess.check_call([sys.executable,'-m', 'pip', 'install', '--upgrade', 'clipboard'])
+    # 다시 import
+    import clipboard
+
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton
 from PyQt5.QtCore import QCoreApplication
 
@@ -9,15 +22,23 @@ class MyApp(QWidget):
       super().__init__()
       self.initUI()
 
+  def copyText(self):
+      text = 'Translation Word'
+      clipboard.copy(text)
+
   def initUI(self):
       btn = QPushButton('Copy', self)
-      btn.move(50, 50)
+      btn.move(self.width, self.height)
       btn.resize(btn.sizeHint())
-      btn.clicked.connect(QCoreApplication.instance().quit)
+      btn.clicked.connect(self.copyText)
 
       self.setWindowTitle('Auto Translation')
       self.setGeometry(300, 300, 300, 200)
       self.show()
+  
+  def copyText(self):
+      text = 'Translation Word'
+      clipboard.copy(text)
 
 
 if __name__ == '__main__':
