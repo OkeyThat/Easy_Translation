@@ -12,9 +12,9 @@ except:
     # 다시 import
     import clipboard
 
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QToolTip
 from PyQt5.QtCore import QCoreApplication
-
+from PyQt5.QtGui import QFont
 
 class MyApp(QWidget):
 
@@ -27,8 +27,11 @@ class MyApp(QWidget):
       clipboard.copy(text)
 
   def initUI(self):
+      QToolTip.setFont(QFont('SansSerif', 10))
+
       btn = QPushButton('Copy', self)
-      btn.move(self.width, self.height)
+      btn.setToolTip('This is a <b>Copy</b> Button')
+      btn.move(50, 50)
       btn.resize(btn.sizeHint())
       btn.clicked.connect(self.copyText)
 
