@@ -23,6 +23,9 @@ class MyApp(QMainWindow):
       self.initUI()
 
   def initUI(self):
+      widget = QWidget(self)                # 위젯의 인스턴스 생성만으로도 QMainWindow에 붙는다.
+      self.setCentralWidget(widget)    # 위젯이 QMainWindow 전체를 차지하게 된다
+
       QToolTip.setFont(QFont('SansSerif', 10))
 
       self.lbl1 = QLabel('Enter your sentence:')
@@ -32,19 +35,20 @@ class MyApp(QMainWindow):
 
       self.te.textChanged.connect(self.text_changed)
 
-      vbox = QVBoxLayout()
-      vbox.addWidget(self.lbl1)
-      vbox.addWidget(self.te)
-      vbox.addWidget(self.lbl2)
-      vbox.addStretch()
-
-      self.setLayout(vbox)
-
       btn = QPushButton('Copy', self)
       btn.setToolTip('This is a <b>Copy</b> Button')
       btn.move(50, 50)
       btn.resize(btn.sizeHint())
       btn.clicked.connect(self.copyText)
+
+      vbox = QVBoxLayout()
+      vbox.addWidget(self.lbl1)
+      vbox.addWidget(self.te)
+      vbox.addWidget(self.lbl2)
+      vbox.addWidget(btn)
+      vbox.addStretch()
+
+      widget.setLayout(vbox)
 
       self.showStatusBar('wait...')
 
