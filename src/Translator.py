@@ -12,6 +12,15 @@ except:
     # 다시 import
     import clipboard
 
+try:
+    # 없는 모듈 import시 에러 발생
+    import googletrans
+except:
+    # pip 모듈 업그레이드
+    subprocess.check_call([sys.executable,'-m', 'pip', 'install', 'googletrans==4.0.0-rc1', 'pip'])
+    # 다시 import
+    import googletrans
+
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton, QToolTip, QLabel, QTextEdit, QVBoxLayout
 from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtGui import QFont
@@ -35,17 +44,24 @@ class MyApp(QMainWindow):
 
       self.te.textChanged.connect(self.text_changed)
 
-      btn = QPushButton('Copy', self)
-      btn.setToolTip('This is a <b>Copy</b> Button')
-      btn.move(50, 50)
-      btn.resize(btn.sizeHint())
-      btn.clicked.connect(self.copyText)
+      transBtn = QPushButton('Translate', self)
+      transBtn.setToolTip('This is a <b>Translate</b> Button')
+      transBtn.move(50, 50)
+      transBtn.resize(transBtn.sizeHint())
+      transBtn.clicked.connect(self.transText(self.te.toPlainText()))
+
+      copyBtn = QPushButton('Copy', self)
+      copyBtn.setToolTip('This is a <b>Copy</b> Button')
+      copyBtn.move(50, 50)
+      copyBtn.resize(copyBtn.sizeHint())
+      copyBtn.clicked.connect(self.copyText)
 
       vbox = QVBoxLayout()
       vbox.addWidget(self.lbl1)
       vbox.addWidget(self.te)
       vbox.addWidget(self.lbl2)
-      vbox.addWidget(btn)
+      vbox.addWidget(transBtn)
+      vbox.addWidget(copyBtn)
       vbox.addStretch()
 
       widget.setLayout(vbox)
@@ -56,6 +72,11 @@ class MyApp(QMainWindow):
       self.setGeometry(300, 300, 300, 200)
       self.show()
   
+  def transText(self, inputText: str):
+      translator = googletrans.Translator()
+      result1 = translator.translate(inputText, dest='en')
+      self.statusBar().showMessage(result1.text)
+
   def copyText(self):
       text = self.te.toPlainText()
       clipboard.copy(text)
