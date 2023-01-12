@@ -48,7 +48,7 @@ class MyApp(QMainWindow):
       transBtn.setToolTip('This is a <b>Translate</b> Button')
       transBtn.move(50, 50)
       transBtn.resize(transBtn.sizeHint())
-      transBtn.clicked.connect(self.transText(self.te.toPlainText()))
+      transBtn.clicked.connect(self.transText)
 
       copyBtn = QPushButton('Copy', self)
       copyBtn.setToolTip('This is a <b>Copy</b> Button')
@@ -72,15 +72,17 @@ class MyApp(QMainWindow):
       self.setGeometry(300, 300, 300, 200)
       self.show()
   
-  def transText(self, inputText: str):
+  def transText(self):
       translator = googletrans.Translator()
-      result1 = translator.translate(inputText, dest='en')
-      self.statusBar().showMessage(result1.text)
+      if len(self.te.toPlainText().split()) > 0:
+        result1 = translator.translate(self.te.toPlainText(), dest='en')
+        self.statusBar().showMessage(result1.text)
+      else:
+        self.statusBar().showMessage('none Text')
 
   def copyText(self):
-      text = self.te.toPlainText()
+      text = self.statusBar().currentMessage()
       clipboard.copy(text)
-      self.showStatusBar(text)
 
   def showStatusBar(self, status):
       text = status
