@@ -21,7 +21,7 @@ except:
     # 다시 import
     import googletrans
 
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton, QToolTip, QLabel, QTextEdit, QVBoxLayout
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton, QToolTip, QLabel, QTextEdit, QVBoxLayout, QDialog
 from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtGui import QFont
 
@@ -56,12 +56,18 @@ class MyApp(QMainWindow):
       copyBtn.resize(copyBtn.sizeHint())
       copyBtn.clicked.connect(self.copyText)
 
+      newWindowBtn = QPushButton('create Window', self)
+      newWindowBtn.clicked.connect(self.dialog_open)
+    
+      dialog = QDialog()
+    
       vbox = QVBoxLayout()
       vbox.addWidget(self.lbl1)
       vbox.addWidget(self.te)
       vbox.addWidget(self.lbl2)
       vbox.addWidget(transBtn)
       vbox.addWidget(copyBtn)
+      vbox.addWidget(newWindowBtn)
       vbox.addStretch()
 
       widget.setLayout(vbox)
@@ -72,6 +78,20 @@ class MyApp(QMainWindow):
       self.setGeometry(300, 300, 300, 200)
       self.show()
   
+  def dialog_open(self):
+      btnDialog = QPushButton('close',self.dialog)
+      btnDialog.move(100,100)
+      btnDialog.cliked.connect(self.dialog_close)
+
+      self.dialog.setWindowTitle('Dialog')
+      self.dialog.setWindowModality(Qt.ApplicationModal)
+      self.dialog.resize(300,200)
+      self.dialog.show()
+
+
+  def dialog_close(self):
+      self.dialog.close()
+
   def transText(self):
       translator = googletrans.Translator()
       if len(self.te.toPlainText().split()) > 0:
