@@ -22,18 +22,20 @@ except:
     import googletrans
 
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton, QToolTip, QLabel, QTextEdit, QVBoxLayout, QDialog
-from PyQt5.QtCore import QCoreApplication
-from PyQt5.QtGui import QFont
+from PyQt5.QtCore import QCoreApplication, Qt
+from PyQt5.QtGui import QFont, QMouseEvent, QCursor
 
 class MyApp(QMainWindow):
 
   def __init__(self):
       super().__init__()
       self.initUI()
+      self.transResultText = ''
 
   def initUI(self):
       widget = QWidget(self)                # 위젯의 인스턴스 생성만으로도 QMainWindow에 붙는다.
       self.setCentralWidget(widget)    # 위젯이 QMainWindow 전체를 차지하게 된다
+      #self.setWindowFlags(Qt.WindowStaysOnTopHint)
 
       QToolTip.setFont(QFont('SansSerif', 10))
 
@@ -46,20 +48,18 @@ class MyApp(QMainWindow):
 
       transBtn = QPushButton('Translate', self)
       transBtn.setToolTip('This is a <b>Translate</b> Button')
-      transBtn.move(50, 50)
       transBtn.resize(transBtn.sizeHint())
       transBtn.clicked.connect(self.transText)
 
       copyBtn = QPushButton('Copy', self)
       copyBtn.setToolTip('This is a <b>Copy</b> Button')
-      copyBtn.move(50, 50)
       copyBtn.resize(copyBtn.sizeHint())
       copyBtn.clicked.connect(self.copyText)
 
       newWindowBtn = QPushButton('create Window', self)
       newWindowBtn.clicked.connect(self.dialog_open)
     
-      dialog = QDialog()
+      self.dialog = QDialog()
     
       vbox = QVBoxLayout()
       vbox.addWidget(self.lbl1)
@@ -79,15 +79,19 @@ class MyApp(QMainWindow):
       self.show()
   
   def dialog_open(self):
-      btnDialog = QPushButton('close',self.dialog)
-      btnDialog.move(100,100)
-      btnDialog.cliked.connect(self.dialog_close)
+      btnText = 'close'
+      if len(self.transResultText) > 0:
+          btnText = self.transResultText
 
-      self.dialog.setWindowTitle('Dialog')
+      btnDialog = QPushButton(btnText, self.dialog)
+      btnDialog.setToolTip('This is a <b>Copy</b> Button')
+      btnDialog.clicked.connect(self.dialog_close)
+
       self.dialog.setWindowModality(Qt.ApplicationModal)
-      self.dialog.resize(300,200)
+      self.dialog.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint)
+      self.dialog.setStyleSheet("background-color : rgba(255, 255, 255, 100)") 
+      self.dialog.resize(btnDialog.sizeHint())
       self.dialog.show()
-
 
   def dialog_close(self):
       self.dialog.close()
@@ -96,6 +100,7 @@ class MyApp(QMainWindow):
       translator = googletrans.Translator()
       if len(self.te.toPlainText().split()) > 0:
         result1 = translator.translate(self.te.toPlainText(), dest='en')
+        self.transResultText = result1.text
         self.statusBar().showMessage(result1.text)
       else:
         self.statusBar().showMessage('none Text')
@@ -111,6 +116,17 @@ class MyApp(QMainWindow):
   def text_changed(self):
       text = self.te.toPlainText()
       self.lbl2.setText('The number of words is ' + str(len(text.split())))
+
+  def dragEnterEvent(self, event):
+    if event.mimeData().hasText():
+        event.accept()
+    else:
+        event.ignore()
+
+  def dropEvent(self, event):
+    if event.mimeData().hasText():
+        text = event.mimeData().text()
+        self.insertPlainText(text)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
