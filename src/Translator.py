@@ -35,10 +35,20 @@ class MyApp(QMainWindow):
   def initUI(self):
       widget = QWidget(self)                # 위젯의 인스턴스 생성만으로도 QMainWindow에 붙는다.
       self.setCentralWidget(widget)    # 위젯이 QMainWindow 전체를 차지하게 된다
-      #self.setWindowFlags(Qt.WindowStaysOnTopHint)
+      self.setWindowFlags(Qt.WindowStaysOnTopHint)
 
       QToolTip.setFont(QFont('SansSerif', 10))
 
+      x = 0
+      y = 0
+
+      self.text = 'x: {0}, y: {1}'.format(x, y)
+      self.label = QLabel(self.text, self)
+      self.label.move(20, 20)
+
+      self.setMouseTracking(True)
+
+        
       self.lbl1 = QLabel('Enter your sentence:')
       self.te = QTextEdit()
       self.te.setAcceptRichText(False)
@@ -62,6 +72,7 @@ class MyApp(QMainWindow):
       self.dialog = QDialog()
     
       vbox = QVBoxLayout()
+      vbox.addWidget(self.label)
       vbox.addWidget(self.lbl1)
       vbox.addWidget(self.te)
       vbox.addWidget(self.lbl2)
@@ -117,16 +128,14 @@ class MyApp(QMainWindow):
       text = self.te.toPlainText()
       self.lbl2.setText('The number of words is ' + str(len(text.split())))
 
-  def dragEnterEvent(self, event):
-    if event.mimeData().hasText():
-        event.accept()
-    else:
-        event.ignore()
+  def mousePressEvent(self, e):
+      x = e.x()
+      y = e.y()
 
-  def dropEvent(self, event):
-    if event.mimeData().hasText():
-        text = event.mimeData().text()
-        self.insertPlainText(text)
+      text = 'x: {0}, y: {1}'.format(x, y)
+      self.label.setText(text)
+      self.label.adjustSize()
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
