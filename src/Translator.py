@@ -37,6 +37,8 @@ class MyApp(QMainWindow):
       self.setCentralWidget(widget)    # 위젯이 QMainWindow 전체를 차지하게 된다
       self.setWindowFlags(Qt.WindowStaysOnTopHint)
 
+      QApplication.clipboard().dataChanged.connect(self.transText)
+
       QToolTip.setFont(QFont('SansSerif', 10))
 
       x = 0
@@ -88,7 +90,7 @@ class MyApp(QMainWindow):
       self.setWindowTitle('Auto Translation')
       self.setGeometry(300, 300, 300, 200)
       self.show()
-  
+
   def dialog_open(self):
       btnText = 'close'
       if len(self.transResultText) > 0:
